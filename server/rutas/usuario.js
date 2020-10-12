@@ -7,10 +7,26 @@ const _ = require("underscore");
 //------------------------------------
 const Usuario = require("../modelos/usuario"); //traigo el modelo para la base de datos de usuario
 
+//Traigo middleware que verifica el token
+const {
+  verificaToken,
+  verificaAdminRole,
+} = require("../middlewares/autenticacion");
+//---------------------------------------------------------------
+
 const app = express();
 
-//Peticion GET-------------------------------------
-app.get("/usuario", function (req, res) {
+//Peticion GET---------uso verificaToken para verificar la llamada por el header----------------------------
+app.get("/usuario", verificaToken, function (req, res) {
+  //===========================
+  // Para traer datos especificos de un usuario
+  //===========================
+  // return res.json({
+  //   usuario: req.usuario,
+  //   nombre: req.usuario.nombre,
+  //   email: req.usuario.email,
+  // });
+
   let desde = req.query.desde || 0; //para manejar desde que usuario voy a mostrar
   desde = Number(desde); //convierto el valor a número
 
@@ -42,8 +58,8 @@ app.get("/usuario", function (req, res) {
 });
 //---------------------------------------------------
 
-//----POST-----------------------------------------
-app.post("/usuario", function (req, res) {
+//----POST------------entre llaves los dos middlleware-----------------------------
+app.post("/usuario", [verificaToken, verificaAdminRole], function (req, res) {
   let body = req.body;
 
   //variable usuario es una instancia de Usuario (modelo DB)
@@ -76,8 +92,11 @@ app.post("/usuario", function (req, res) {
 });
 //-------------------------------------------------
 
-//----------PUT----------------------------
-app.put("/usuario/:id", function (req, res) {
+//----------PUT------entre llaves los middleware----------------------
+app.put("/usuario/:id", [verificaToken, verificaAdminRole], function (
+  req,
+  res
+) {
   let id = req.params.id;
   //utilizo underscore.js para determinar que campos se pueden modificar
   let body = _.pick(req.body, ["nombre", "email", "img", "role", "estado"]);
@@ -107,7 +126,10 @@ app.put("/usuario/:id", function (req, res) {
 
 //------Delete----------------------------------
 
-app.delete("/usuario/:id", function (req, res) {
+app.delete("/usuario/:id", [verificaToken, verificaAdminRole], function (
+  req,
+  res
+) {
   // res.json("Delete Usuario");
 
   let id = req.params.id;

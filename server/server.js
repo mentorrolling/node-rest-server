@@ -1,3 +1,5 @@
+//Entes archivo manejo las configuraciones globales
+
 require("./config/config"); //importo las configuraciones
 const express = require("express");
 const mongoose = require("mongoose");
@@ -13,8 +15,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-//traigo el archivo de las rutas
-app.use(require("./rutas/usuario.js"));
+//traigo el archivo de las rutas globales
+app.use(require("./rutas/index"));
 
 //Para corregir todas las advertencias de obsolescencia
 mongoose.set("useNewUrlParser", true);
