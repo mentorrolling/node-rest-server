@@ -4,6 +4,9 @@ require("./config/config"); //importo las configuraciones
 const express = require("express");
 const mongoose = require("mongoose");
 
+//Agregando Path para usar carpeta public
+const path = require("path");
+
 const cors = require("cors");
 
 const bodyParser = require("body-parser"); //manejador de respuesta del body
@@ -15,6 +18,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
+//Habilitar carpeta public
+app.use(express.static(path.resolve(__dirname, "../public")));
+
+console.log(path.resolve(__dirname, "../public"));
 //traigo el archivo de las rutas globales
 app.use(require("./rutas/index"));
 
